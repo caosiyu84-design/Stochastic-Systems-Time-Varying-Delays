@@ -1,0 +1,63 @@
+% 清理环境
+clc;
+clear;
+close all;
+
+% 精确提取自原图的脉冲时间 t 和强度 beta 数据
+% 类型标记: 1 = 红色圆点 (beta_1, t_{2k-1}), 2 = 蓝色方块 (beta_2, t_{2k})
+t_red  = [0.51, 1.45, 2.51, 3.49, 4.45, 5.43, 6.42, 7.42, 8.41, 9.42];
+beta_red = [0.55, 0.69, 0.46, 0.42, 0.64, 0.41, 0.73, 0.47, 0.52, 0.57];
+
+t_blue = [0.93, 1.93, 2.87, 3.89, 4.97, 5.92, 6.91, 7.85, 8.87, 9.87];
+beta_blue = [0.88, 0.74, 0.56, 0.85, 0.79, 0.89, 0.59, 0.57, 0.71, 0.62];
+
+% 开始画图
+figure('Color', 'white', 'Position', [100, 100, 850, 500]);
+hold on;
+
+% 绘制底部的零线
+plot([0, 10.5], [0, 0], 'k--', 'LineWidth', 1);
+
+% 绘制中性极限线 (Neutral limit kappa = 1)
+h_limit = plot([0, 10.5], [1, 1], '--', 'Color', [0.5, 0.5, 0.5], 'LineWidth', 1.5);
+
+% 绘制红色圆点及其竖直干线 (t_{2k-1} impulses)
+h_red = [];
+for i = 1:length(t_red)
+    h_stem = stem(t_red(i), beta_red(i), 'r', 'LineWidth', 1.2, 'BaseValue', 0);
+    set(h_stem, 'Marker', 'none'); 
+    p = scatter(t_red(i), beta_red(i), 55, 'r', 'filled');
+    if isempty(h_red), h_red = p; end
+end
+
+% 绘制蓝色方块及其竖直干线 (t_{2k} impulses)
+h_blue = [];
+for i = 1:length(t_blue)
+    h_stem = stem(t_blue(i), beta_blue(i), 'b', 'LineWidth', 1.2, 'BaseValue', 0);
+    set(h_stem, 'Marker', 'none');
+    p = scatter(t_blue(i), beta_blue(i), 55, 'b', 'square', 'filled');
+    if isempty(h_blue), h_blue = p; end
+end
+
+% 坐标轴与范围设置
+xlim([0, 10.5]);
+ylim([0, 1.2]);
+grid on;
+set(gca, 'GridLineStyle', ':', 'GridColor', [0.7, 0.7, 0.7], 'GridAlpha', 0.6);
+
+% 标题与标签
+title('Realization of Stochastic Impulsive Intensities', 'FontSize', 14, 'FontWeight', 'bold');
+xlabel('Time $t$', 'Interpreter', 'latex', 'FontSize', 12);
+ylabel('Impulsive Intensity $\beta_i$', 'Interpreter', 'latex', 'FontSize', 12);
+
+% 图例设置 (Legend)
+legend([h_limit, h_red, h_blue], ...
+    {'Neutral limit ($\kappa = 1$)', ...
+     '$\beta_1 \in [0.4, 0.8]$ ($t_{2k-1}$ impulses)', ...
+     '$\beta_2 \in [0.5, 0.9]$ ($t_{2k}$ impulses)'}, ...
+    'Interpreter', 'latex', 'FontSize', 10, 'Location', 'northeast');
+
+box on;
+hold off;
+
+
